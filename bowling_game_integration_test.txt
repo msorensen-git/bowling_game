@@ -1,0 +1,116 @@
+/*
+Edge Cases to Test:
+
+Tenth frame special scenarios:
+    Strike + Strike + Strike
+    Strike + Spare
+    Spare + Single ball
+    Open frame
+
+Invalid input handling:
+    Negative pin counts
+    Pin counts > 10
+    Invalid frame types
+    Incomplete games
+    Second ball exceeding remaining pins
+
+*/
+#include "bowling_game.h"
+
+void test_complete_game_flow() {
+    // Test entire game flow
+    struct frame_results game[MAX_FRAMES];
+    init_game_results(game);
+    
+    // Simulate game play
+    play_game(game);
+    
+    // Verify game is valid
+    assert(validate_game(game) == NO_ERROR);
+    
+    // Verify scores calculated correctly
+    assert(calculate_game_scores(game) == NO_ERROR);
+    
+    // Verify running totals are correct
+    int running_total = 0;
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        running_total += game[i].score;
+        // Verify running total matches expected
+    }
+}
+
+/*
+
+*/
+// Common bowling scenarios
+struct TestCase {
+    struct frame_results frames[MAX_FRAMES];
+    int expected_total;
+    enum bowling_error expected_result;
+};
+/*
+struct TestCase test_cases[] = {
+    // Perfect game (300)
+    {perfect_game, 300, NO_ERROR},
+    
+    // All spares with 5 pins (150)
+    {all_spares, 150, NO_ERROR},
+    
+    // All open frames with 9 pins (90)
+    {all_nines, 90, NO_ERROR},
+    
+    // Alternating strikes and spares
+    {mixed_game, 200, NO_ERROR},
+    
+    // Invalid games
+    {incomplete_game, 0, INCOMPLETE_GAME},
+    {invalid_pins_game, 0, INVALID_PINS}
+};
+*/
+//Random Game Testing
+void test_random_games() {
+    for (int i = 0; i < 1000; i++) {
+        struct frame_results game[MAX_FRAMES];
+        init_game_results(game);
+        play_game(game);
+        
+        // Verify each random game
+        assert(validate_game(game) == NO_ERROR);
+        assert(calculate_game_scores(game) == NO_ERROR);
+        
+        // Verify score is within valid range (0-300)
+        int total = calculate_total_score(game);
+        assert(total >= 0 && total <= 300);
+    }
+}
+
+// Display Testing
+/*
+Display Testing:
+    Verify correct formatting for all frame types
+    Check alignment of numbers and symbols
+    Verify running totals are properly aligned
+    Test with various terminal widths
+    Verify special characters display correctly
+
+Memory Testing:
+    Use tools like Valgrind to check for memory leaks
+    Verify proper initialization of all variables
+    Check for buffer overflows in display formatting
+
+Automated Testing:
+    Set up a test framework to run all tests automatically
+    Include both positive and negative test cases
+    Generate test coverage reports
+    Implement continuous integration testing
+
+Remember to:
+    Test each component in isolation first
+    Then test integrated components
+    Include both valid and invalid inputs
+    Test boundary conditions
+    Verify error handling
+    Check output formatting
+    Test random game generation
+    Verify scoring rules are correctly implemented
+*/

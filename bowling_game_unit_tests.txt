@@ -1,0 +1,49 @@
+void test_calculate_game_scores() {
+    // Test perfect game (all strikes)
+    struct frame_results perfect_game[MAX_FRAMES] = {
+        {STRIKE, 10, 0, 0, 0},  // Frame 1
+        {STRIKE, 10, 0, 0, 0},  // Frame 2
+        // ... populate all frames
+    };
+    assert(calculate_game_scores(perfect_game) == NO_ERROR);
+    assert(perfect_game[0].score == 30);  // 10 + 10 + 10
+    
+    // Test all spares
+    struct frame_results all_spares[MAX_FRAMES] = {
+        {SPARE, 5, 5, 0, 0},    // Frame 1
+        {SPARE, 5, 5, 0, 0},    // Frame 2
+        // ... populate all frames
+    };
+    assert(calculate_game_scores(all_spares) == NO_ERROR);
+    assert(all_spares[0].score == 15);    // 10 + 5
+}
+
+void test_validate_game() {
+    // Test invalid pin count
+    struct frame_results invalid_pins[MAX_FRAMES] = {
+        {OPEN, 11, 0, 0, 0},    // Invalid: more than MAX_PINS
+        // ... populate rest of frames
+    };
+    assert(validate_game(invalid_pins) == INVALID_PINS);
+    
+    // Test invalid frame type
+    struct frame_results invalid_type[MAX_FRAMES] = {
+        {STRIKE, 9, 0, 0, 0},   // Invalid: STRIKE but not 10 pins
+        // ... populate rest of frames
+    };
+    assert(validate_game(invalid_type) == INVALID_FRAME_TYPE);
+}
+
+void test_print_frame() {
+    // Redirect stdout for testing
+    char buffer[256];
+    // Test strike frame
+    struct frame_results strike = {STRIKE, 10, 0, 0, 30};
+    print_frame(strike, 0, 30);
+    // Verify output format matches "Frame  1: 10  -  X = 30 =  30"
+    
+    // Test spare frame
+    struct frame_results spare = {SPARE, 7, 3, 0, 15};
+    print_frame(spare, 1, 45);
+    // Verify output format matches "Frame  2:  7  3  / = 15 =  45"
+}
